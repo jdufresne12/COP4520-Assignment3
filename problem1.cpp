@@ -1,3 +1,4 @@
+// John Dufresne
 #include <iostream>
 #include <thread>
 #include <vector>
