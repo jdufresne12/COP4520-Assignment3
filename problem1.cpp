@@ -46,7 +46,7 @@ void safePrint(const string& message) {
 
 // Function to add a Gift to the linked list
 void addGift(int tag) {
-    unique_lock<mutex> lock(mtx);
+    lock_guard<mutex> lock(mtx);
     Gift* newGift = new Gift(tag);
     bool wasEmpty = (head == nullptr);
 
@@ -57,15 +57,13 @@ void addGift(int tag) {
         tail = newGift;
     }
 
-    lock.unlock(); // Manual unlock is not strictly necessary here but added for clarity
-    if (wasEmpty) {
-        cv.notify_one(); // Notify only if the list was empty before adding
-    }
+    cv.notify_one(); 
 }
 
 // Function to remove a Gift from the linked list
 bool removeGift(int tag) {
     unique_lock<mutex> lock(mtx);
+    //condition variable to wait to access the linked list
     cv.wait(lock, [&]() { return head != nullptr; });
 
     Gift* curr = head;
@@ -119,30 +117,30 @@ void servantTask(int id) {
     int action = -1;
     int tag;
     while (giftsCount > 0 || addedGifts.size() > 0) {
-        action = (action+1) % 3;
+        action = (action+1) % 3;                // Making sure servants alternate through tasks
         {
             lock_guard<mutex> lock(Gift_mtx); // Protect both gifts and addedGifts with the same mutex
             if (action == 0 && !gifts.empty()) { // Add a Gift
-                tag = gifts.back();
-                gifts.pop_back();
-                giftsCount--;
-                addedGifts.push_back(tag);
-                addGift(tag);
-                num_gifts++;
+                tag = gifts.back();             // Grab tag from end of undordered gifts bag
+                gifts.pop_back();               // Remove that gift from the bag
+                giftsCount--;                   
+                addedGifts.push_back(tag);      // Add gift to addedGifts vector so servants know which gifts have been added
+                addGift(tag);                       
+                num_gifts++;                    // Increase our total of gifts to keep count
                 safePrint("Servant " + to_string(id+1) + ": Added gift with tag " + to_string(tag));
             } 
             else if (action == 1 && !addedGifts.empty()) { // Remove a Gift
-                tag = addedGifts.front();
-                addedGifts.erase(addedGifts.begin());
+                tag = addedGifts.front();                   // Grab tag of the first gift in the list    
                 if (removeGift(tag)) {
-                    num_cards++;
+                    addedGifts.erase(addedGifts.begin());   // If its in the list write the Thank You card and remove it
+                    num_cards++;                            // Increase our count of written Thank you cards
                     safePrint("Servant " + to_string(id+1) + ": Thank you card written for tag " + to_string(tag));
                 } else {
                     safePrint("Servant " + to_string(id+1) + ": Gift with tag " + to_string(tag) + " not found");
                 }
             } 
             else {
-                tag = getRandomInt(1,NUM_GIFTS);
+                tag = getRandomInt(1,NUM_GIFTS);            // Randomly generate tag for a servant to look for
                 if (checkGift(tag)) {
                     safePrint("Servant " + to_string(id+1) + ": Gift with tag " + to_string(tag) + " is in the list");
                 } else {
@@ -154,12 +152,11 @@ void servantTask(int id) {
 }
 
 int main() {
-    // Initialize gifts vector with unique tags
+    // Initialize gifts vector with unique tags, and shuffle it so its unordered
     for (int i = 0; i < NUM_GIFTS; i++)
         gifts.push_back(i+1);
     shuffle(gifts.begin(), gifts.end(), default_random_engine(random_device{}()));
     giftsCount = NUM_GIFTS;
-
 
     cout << "Servants are starting their work..." << endl;
     auto start_timer = chrono::high_resolution_clock::now(); 
@@ -182,5 +179,6 @@ int main() {
     cout << "Number of Gifts: " << num_gifts << endl;
     cout << "Number of Cards: " << num_cards << endl;
     cout << "Runtime: " << duration.count() << " seconds." << endl;
+    cout << "Check Problem1output.txt for servants task log" << endl;
     return 0;
 }
