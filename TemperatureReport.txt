@@ -1,0 +1,70 @@
+Hourly Report:
+Top 5 Highest Temperatures:
+69 F
+69 F
+69 F
+70 F
+70 F
+Top 5 Lowest Temperatures:
+-100 F
+-100 F
+-100 F
+-100 F
+-99 F
+Largest Temperature Difference: 170.000000 F (starting at 54 seconds)
+Hourly Report:
+Top 5 Highest Temperatures:
+67 F
+67 F
+68 F
+70 F
+70 F
+Top 5 Lowest Temperatures:
+-100 F
+-100 F
+-100 F
+-99 F
+-98 F
+Largest Temperature Difference: 170.000000 F (starting at 111 seconds)
+Hourly Report:
+Top 5 Highest Temperatures:
+69 F
+69 F
+70 F
+70 F
+70 F
+Top 5 Lowest Temperatures:
+-100 F
+-100 F
+-99 F
+-98 F
+-98 F
+Largest Temperature Difference: 170.000000 F (starting at 173 seconds)
+Hourly Report:
+Top 5 Highest Temperatures:
+67 F
+68 F
+69 F
+69 F
+70 F
+Top 5 Lowest Temperatures:
+-100 F
+-100 F
+-99 F
+-99 F
+-99 F
+Largest Temperature Difference: 169.000000 F (starting at 241 seconds)
+Hourly Report:
+Top 5 Highest Temperatures:
+69 F
+69 F
+70 F
+70 F
+70 F
+Top 5 Lowest Temperatures:
+-100 F
+-100 F
+-100 F
+-100 F
+-99 F
+Largest Temperature Difference: 170.000000 F (starting at 296 seconds)
