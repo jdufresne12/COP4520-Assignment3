@@ -24,7 +24,7 @@ struct TemperatureReading {
 
 vector<TemperatureReading> readings; // Shared memory - vector holding all the readings
 mutex readingsMtx; // mutex for temperature readings
-ofstream outFile("TemperatureReport.txt");
+ofstream outFile("TemperatureReportShortened.txt");
 
 // Random number generator function
 int getRandomTemp() {
@@ -50,8 +50,8 @@ void calculateMaxDifference(const vector<TemperatureReading>& readings, const ch
 
     for (size_t i = 0; i < readings.size() - 1; ++i) {
         for (size_t j = i + 1; j < readings.size(); ++j) {
-            auto timeDiff = chrono::duration_cast<chrono::minutes>(readings[j].timestamp - readings[i].timestamp).count();
-            if (timeDiff > 10) break; // Checking for more than 10 Minutes
+            auto timeDiff = chrono::duration_cast<chrono::seconds>(readings[j].timestamp - readings[i].timestamp).count();
+            if (timeDiff > 10) break; // Checking for more than 10 seconds
 
             double diff = abs(readings[j].temp - readings[i].temp);
             if (diff > maxDiff) {
@@ -62,8 +62,8 @@ void calculateMaxDifference(const vector<TemperatureReading>& readings, const ch
     }
 
     if (maxDiffStart.time_since_epoch().count() != 0) {
-        auto maxDiffStartMinutes = chrono::duration_cast<chrono::minutes>(maxDiffStart - programStartTime).count();
-        safePrint("Largest Temperature Difference: " + to_string(maxDiff) + " F (starting at " + to_string(maxDiffStartMinutes) + " Minutes)");
+        auto maxDiffStartSeconds = chrono::duration_cast<chrono::seconds>(maxDiffStart - programStartTime).count();
+        safePrint("Largest Temperature Difference: " + to_string(maxDiff) + " F (starting at " + to_string(maxDiffStartSeconds) + " seconds)");
     } else {
         safePrint("Unable to calculate largest temperature difference.");
     }
@@ -96,7 +96,7 @@ void temperatureSensor(int sensorId) {
     auto lastReportTime = chrono::steady_clock::now();
 
     while (true) {
-        this_thread::sleep_for(chrono::minutes(1)); // Simulate 1-minute intervals
+        this_thread::sleep_for(chrono::seconds(1)); // Simulate 1-minute intervals
 
         auto now = chrono::steady_clock::now();
         int temp = getRandomTemp();
@@ -106,8 +106,8 @@ void temperatureSensor(int sensorId) {
             readings.emplace_back(temp, now);
         }
 
-        // Generate report hourly (simulated as every hour here)
-        if (sensorId == 0 && chrono::duration_cast<chrono::minutes>(now - lastReportTime) >= chrono::minutes(60)) {
+        // Generate report hourly (simulated as every minute here)
+        if (sensorId == 0 && chrono::duration_cast<chrono::minutes>(now - lastReportTime) >= chrono::minutes(1)) {
             vector<TemperatureReading> tempReadings;
             {
                 lock_guard<mutex> lock(readingsMtx);
