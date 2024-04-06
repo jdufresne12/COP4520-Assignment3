@@ -8,9 +8,14 @@ John Dufresne - COP4520 Assignment 3 - Due 4/5/2024
     ./problem1
   ```
 
-- ### Problem 2
+- ### Problem 2 - Hourly Report
   ```command
     g++ problem2.cpp -o problem2 -std=c++20
+    ./problem2
+  ```
+  - ### Problem 2 - Minutely Report
+  ```command
+    g++ problem2shortened.cpp -o problem2shortened -std=c++20
     ./problem2
   ```
 
